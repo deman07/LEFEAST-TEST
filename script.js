@@ -20,7 +20,7 @@ async function fetchDepartures() {
 function renderDepartures(departures) {
   list.innerHTML = '';
 
-  departures.slice(0, 6).forEach(dep => {
+  departures.slice(0, 3).forEach(dep => {
     const destination = dep.destination?.[0]?.locationName || 'Unknown';
     const platform = dep.platform || 'TBD';
     const time = dep.std || 'N/A';
@@ -34,7 +34,7 @@ function renderDepartures(departures) {
       statusText = 'Cancelled';
     } else if (etd !== 'on time' && etd !== '') {
       statusClass = 'delayed';
-      statusText = `Delayed. Expected ${etd}`;
+      statusText = `Expected ${etd}`;
     }
 
     const row = document.createElement("div");
@@ -122,5 +122,6 @@ if (useMock) {
 }
 
 startDepartureUpdates();
+
 
 
