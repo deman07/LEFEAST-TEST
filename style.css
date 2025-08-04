@@ -13,7 +13,7 @@ body {
 
 .menu-img {
   width: auto;
-  height: 75vh; /* take up 85% of screen height */
+  height: 70vh; /* take up 85% of screen height */
   display: block;
   object-fit: contain;
   margin: 0 auto;
@@ -160,4 +160,5 @@ body {
     font-size: 1.3rem;
   }
 }
+
 
