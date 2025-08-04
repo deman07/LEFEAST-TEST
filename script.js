@@ -98,7 +98,7 @@ function updateClock() {
 // Start the full update loop
 async function startDepartureUpdates() {
   updateClock();
-  //setInterval(updateClock, 1000);
+  setInterval(updateClock, 1000);
 
   const update = async () => {
     const data = await fetchDepartures();
@@ -107,10 +107,11 @@ async function startDepartureUpdates() {
   };
 
   await update();
-  //setInterval(update, 30000);
+  setInterval(update, 30000);
 }
 
 startDepartureUpdates();
+
 
 
 
