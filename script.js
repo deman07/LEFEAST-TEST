@@ -2,7 +2,7 @@ const list = document.getElementById("departuresList");
 
 // Get departures from RailData API
 async function fetchDepartures() {
-  const url = 'https://api1.raildata.org.uk/1010-live-departure-board-dep1_2/LDBWS/api/20220120/GetDepartureBoard/DON';
+  const url = 'https://api1.raildata.org.uk/1010-live-departure-board-dep1_2/LDBWS/api/20220120/GetDepartureBoard/BON';
   try {
     const response = await fetch(url, {
       headers: {
@@ -122,4 +122,5 @@ if (useMock) {
 }
 
 startDepartureUpdates();
+
 
