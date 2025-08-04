@@ -1,4 +1,5 @@
 const list = document.getElementById("departuresList");
+let lastRenderedRids = new Set();
 
 // Get departures from RailData API
 async function fetchDepartures() {
@@ -17,7 +18,35 @@ async function fetchDepartures() {
   }
 }
 
+function filterUpcomingDepartures(departures) {
+  const now = new Date();
+  return departures.filter(dep => {
+    const timeStr = (dep.etd && dep.etd.toLowerCase() !== "on time" && dep.etd.toLowerCase() !== "cancelled")
+      ? dep.etd  // use expected time if it's a delay
+      : dep.std; // otherwise use scheduled time
+
+    if (!timeStr || !/^\d{1,2}:\d{2}$/.test(timeStr)) return true; // keep "On time" and weird entries
+
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    const depTime = new Date();
+    depTime.setHours(hours, minutes, 0, 0);
+
+    // include if now is before the expected or scheduled time
+    return depTime >= now;
+  });
+}
+
 function renderDepartures(departures) {
+  const currentRids = new Set(departures.map(d =>
+    d.rid || d.serviceID || d.std + d.destination?.[0]?.locationName
+  ));
+
+  const hasChanged =
+    departures.length !== lastRenderedRids.size ||
+    [...currentRids].some(r => !lastRenderedRids.has(r));
+
+  if (!hasChanged) return;
+
   list.innerHTML = '';
 
   departures.slice(0, 3).forEach(dep => {
@@ -39,27 +68,27 @@ function renderDepartures(departures) {
 
     const row = document.createElement("div");
     row.className = "departure-row";
-
-row.innerHTML = `
-  <div class="destination">${destination}</div>
-  <div class="platform">Platform ${platform}</div>
-  <div class="time">${time}</div>
-  <div class="status ${statusClass}">${statusText}</div>
-`;
-
-
-
+    row.innerHTML = `
+      <div class="destination">${destination}</div>
+      <div class="platform">Platform ${platform}</div>
+      <div class="time">${time}</div>
+      <div class="status ${statusClass}">${statusText}</div>
+    `;
 
     list.appendChild(row);
   });
-}
 
+  lastRenderedRids = currentRids;
+}
 
 // Clock at top right
 function updateClock() {
   const now = new Date();
   const clock = document.getElementById("clock");
-  clock.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  clock.textContent = now.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 }
 
 // Start the full update loop
@@ -68,60 +97,13 @@ async function startDepartureUpdates() {
   setInterval(updateClock, 1000);
 
   const update = async () => {
-const useMock = false;
-
-if (useMock) {
-  const mockDepartures = [
-    {
-      destination: [{ locationName: "Blackpool" }],
-      platform: "1",
-      std: "20:55",
-      etd: "On time"
-    },
-    {
-      destination: [{ locationName: "Manchester Victoria" }],
-      platform: "4",
-      std: "21:15",
-      etd: "Cancelled"
-    },
-    {
-      destination: [{ locationName: "Manchester Oxford Road" }],
-      platform: "5",
-      std: "21:16",
-      etd: "21:22"
-    },
-    {
-      destination: [{ locationName: "York" }],
-      platform: "3",
-      std: "21:25",
-      etd: "On time"
-    },
-    {
-      destination: [{ locationName: "London Euston" }],
-      platform: "6",
-      std: "21:34",
-      etd: "21:50"
-    },
-    {
-      destination: [{ locationName: "Wigan North Western" }],
-      platform: "TBD",
-      std: "21:48",
-      etd: "On time"
-    }
-  ];
-
-  renderDepartures(mockDepartures);
-} else {
-  const data = await fetchDepartures();
-  renderDepartures(data);
-}
-
+    const data = await fetchDepartures();
+    const upcoming = filterUpcomingDepartures(data);
+    renderDepartures(upcoming);
   };
+
   await update();
   setInterval(update, 15000);
 }
 
 startDepartureUpdates();
-
-
-
