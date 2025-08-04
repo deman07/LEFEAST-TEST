@@ -56,10 +56,10 @@ body {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  background-color: #f9d83a;
-  padding: 50px 60px; /* Increased vertical and horizontal padding */
+  background-color: #ffde59;
+  padding: 25px 60px; /* Increased vertical and horizontal padding */
   border-radius: 75px;
-  margin: 60px 120px;
+  margin: 45px 120px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   color: #000;
 }
@@ -160,3 +160,4 @@ body {
     font-size: 1.3rem;
   }
 }
+
