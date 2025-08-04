@@ -18,24 +18,25 @@ async function fetchDepartures() {
   }
 }
 
+// Filter upcoming departures using ETD (delayed time) when available
 function filterUpcomingDepartures(departures) {
   const now = new Date();
   return departures.filter(dep => {
-    const timeStr = (dep.etd && dep.etd.toLowerCase() !== "on time" && dep.etd.toLowerCase() !== "cancelled")
-      ? dep.etd  // use expected time if it's a delay
-      : dep.std; // otherwise use scheduled time
+    const etdLower = (dep.etd || "").toLowerCase();
+    const useETD = etdLower !== "on time" && etdLower !== "cancelled" && /^\d{1,2}:\d{2}$/.test(dep.etd);
 
-    if (!timeStr || !/^\d{1,2}:\d{2}$/.test(timeStr)) return true; // keep "On time" and weird entries
+    const timeStr = useETD ? dep.etd : dep.std;
+    if (!timeStr || !/^\d{1,2}:\d{2}$/.test(timeStr)) return true;
 
     const [hours, minutes] = timeStr.split(":").map(Number);
     const depTime = new Date();
     depTime.setHours(hours, minutes, 0, 0);
 
-    // include if now is before the expected or scheduled time
     return depTime >= now;
   });
 }
 
+// Render only if content changed
 function renderDepartures(departures) {
   const currentRids = new Set(departures.map(d =>
     d.rid || d.serviceID || d.std + d.destination?.[0]?.locationName
@@ -94,7 +95,6 @@ function updateClock() {
   }
 }
 
-
 // Start the full update loop
 async function startDepartureUpdates() {
   updateClock();
@@ -111,5 +111,3 @@ async function startDepartureUpdates() {
 }
 
 startDepartureUpdates();
-
-
