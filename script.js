@@ -68,7 +68,7 @@ async function startDepartureUpdates() {
   setInterval(updateClock, 1000);
 
   const update = async () => {
-const useMock = true;
+const useMock = false;
 
 if (useMock) {
   const mockDepartures = [
@@ -122,3 +122,4 @@ if (useMock) {
 }
 
 startDepartureUpdates();
+
