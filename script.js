@@ -107,10 +107,11 @@ async function startDepartureUpdates() {
   };
 
   await update();
-  setInterval(update, 30000);
+  //setInterval(update, 30000);
 }
 
 startDepartureUpdates();
+
 
 
 
