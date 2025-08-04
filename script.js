@@ -85,12 +85,15 @@ function renderDepartures(departures) {
 function updateClock() {
   const now = new Date();
   const clock = document.getElementById("clock");
-  clock.textContent = now.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
-    hour12:false
-  });
+  if (clock) {
+    clock.textContent = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  }
 }
+
 
 // Start the full update loop
 async function startDepartureUpdates() {
@@ -108,4 +111,5 @@ async function startDepartureUpdates() {
 }
 
 startDepartureUpdates();
+
 
