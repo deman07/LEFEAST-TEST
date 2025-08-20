@@ -3,7 +3,7 @@ let lastRenderedRids = new Set();
 
 // Get departures from RailData API
 async function fetchDepartures() {
-  const url = 'https://api1.raildata.org.uk/1010-live-departure-board-dep1_2/LDBWS/api/20220120/GetDepartureBoard/BON';
+  const url = 'https://api1.raildata.org.uk/1010-live-departure-board-dep1_2/LDBWS/api/20220120/GetDepartureBoard/BON?numRows=15';
   try {
     const response = await fetch(url, {
       headers: {
@@ -50,7 +50,7 @@ function renderDepartures(departures) {
 
   list.innerHTML = '';
 
-  departures.slice(0, 3).forEach(dep => {
+  departures.slice(0, 11).forEach(dep => {
     const destination = dep.destination?.[0]?.locationName || 'Unknown';
     const platform = dep.platform || 'TBD';
     const time = dep.std || 'N/A';
@@ -111,6 +111,7 @@ async function startDepartureUpdates() {
 }
 
 startDepartureUpdates();
+
 
 
 
