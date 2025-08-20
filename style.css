@@ -41,6 +41,7 @@ body {
   font-size: 1.5rem;
   font-weight: bold;
   color: #000;
+  margin: 50px 25px 0px 25px;
 }
 
 .clock {
@@ -48,6 +49,7 @@ body {
   font-size: 1.5rem;
   font-weight: bold;
   color: #000;
+  margin: 50px 25px 0px 25px;
 }
 
 
@@ -160,5 +162,6 @@ body {
     font-size: 1.3rem;
   }
 }
+
 
 
